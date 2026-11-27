@@ -1,0 +1,18 @@
+[
+  {
+    "datei": "zephyr",
+    "titel": "Zephyr RTOS",
+    "text": "Board fixes for the Seeed XIAO nRF54LM20A",
+    "repo": "zephyrproject-rtos/zephyr",
+    "prs": [114571, 114572],
+    "link": "https://github.com/zephyrproject-rtos/zephyr/pulls?q=is%3Apr+author%3ADivad27"
+  },
+  {
+    "datei": "anyps5",
+    "titel": "AnyPS5",
+    "text": "ICU-based collator for libSceIcu",
+    "repo": "boykopovar/AnyPS5",
+    "prs": [23196],
+    "link": "https://github.com/boykopovar/AnyPS5/pull/23196"
+  }
+]
