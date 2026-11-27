@@ -1,29 +1,27 @@
 import xml.etree.ElementTree as ET
 
-from generator.karten import Beitrag, karte, lade_liste, status
+import pytest
+
+from generator.karten import Beitrag, karte, lade_liste
 from generator.stil import DUNKEL, HELL
 
-BEITRAG = Beitrag("zephyr", "Zephyr RTOS", "Board fixes for the Seeed XIAO nRF54LM20A",
-                  "zephyrproject-rtos/zephyr", (114571, 114572), "https://example.org")
-GEMERGT = {"state": "closed", "merged_at": "2026-01-01T00:00:00Z"}
-OFFEN = {"state": "open", "merged_at": None}
-ZU = {"state": "closed", "merged_at": None}
-
-
-def test_status():
-    assert status([GEMERGT, GEMERGT]) == ("2 MERGED", "gemergt")
-    assert status([OFFEN]) == ("OPEN", "offen")
-    assert status([GEMERGT, OFFEN]) == ("1 MERGED · 1 OPEN", "offen")
-    assert status([ZU]) == ("CLOSED", "zu")
+BEITRAG = Beitrag("zephyr", "Zephyr RTOS", "Real-time OS for small embedded devices", "https://example.org")
 
 
 def test_karte_ist_gueltiges_svg():
     for thema in (HELL, DUNKEL):
-        wurzel = ET.fromstring(karte(BEITRAG, "2 MERGED", "gemergt", thema))
-        assert wurzel.get("aria-label") == "Zephyr RTOS: Board fixes for the Seeed XIAO nRF54LM20A"
+        wurzel = ET.fromstring(karte(BEITRAG, thema))
+        assert wurzel.get("aria-label") == "Zephyr RTOS: Real-time OS for small embedded devices"
+
+
+def test_zu_langer_text_wird_abgelehnt():
+    with pytest.raises(ValueError):
+        karte(Beitrag("x", "X", "word " * 60, "https://example.org"), HELL)
 
 
 def test_liste_aus_dem_repo():
     liste = lade_liste("beitraege.json")
-    assert [b.datei for b in liste] == ["zephyr", "anyps5"]
-    assert liste[0].prs == (114571, 114572)
+    assert [b.datei for b in liste] == ["zephyr", "anyps5", "noop"]
+    assert all(b.link.startswith("https://github.com/") for b in liste)
+    for b in liste:
+        karte(b, HELL)

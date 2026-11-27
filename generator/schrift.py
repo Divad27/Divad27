@@ -45,3 +45,15 @@ def pfad(font, inhalt, groesse, x, y, sperr=0.0, anker="start", max_breite=None)
         glyphen[n].draw(TransformPen(stift, (s, 0, 0, -s, x, y)))
         x += hmtx[n][0] * s + sperr * groesse
     return stift.getCommands(), breite
+
+
+def umbrechen(font, inhalt, groesse, max_breite):
+    """Teilt inhalt an Leerzeichen in Zeilen, die höchstens max_breite breit sind."""
+    zeilen = []
+    for wort in inhalt.split():
+        probe = f"{zeilen[-1]} {wort}" if zeilen else wort
+        if zeilen and pfad(font, probe, groesse, 0, 0)[1] <= max_breite:
+            zeilen[-1] = probe
+        else:
+            zeilen.append(wort)
+    return zeilen

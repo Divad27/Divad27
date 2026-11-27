@@ -1,6 +1,15 @@
 import pytest
 
-from generator.schrift import pfad, saira
+from generator.schrift import pfad, saira, umbrechen
+
+
+def test_umbrechen_haelt_max_breite_ein():
+    font = saira(400, 100)
+    satz = "Offline WHOOP companion that keeps all data on your device"
+    zeilen = umbrechen(font, satz, 32, 300)
+    assert len(zeilen) > 1
+    assert " ".join(zeilen) == satz
+    assert all(pfad(font, z, 32, 0, 0)[1] <= 300 for z in zeilen)
 
 
 def test_pfad_liefert_kontur_und_breite():

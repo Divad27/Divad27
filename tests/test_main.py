@@ -1,14 +1,13 @@
 from generator import __main__ as programm
-from generator import karten
 
 
-def test_main_schreibt_alle_bilder(tmp_path, beitragsseite, monkeypatch):
+def test_main_schreibt_alle_bilder(tmp_path, beitragsseite):
     quelle = tmp_path / "seite.html"
     quelle.write_text(beitragsseite([0, 3] * 185), encoding="utf-8")
-    monkeypatch.setattr(karten, "hole_pr", lambda repo, nummer, token=None: {"state": "open", "merged_at": None})
     assert programm.main(["--aus", str(tmp_path / "out"), "--quelle", str(quelle)]) == 0
     assert sorted(p.name for p in (tmp_path / "out").iterdir()) == [
         "karte-anyps5-dunkel.svg", "karte-anyps5-hell.svg",
+        "karte-noop-dunkel.svg", "karte-noop-hell.svg",
         "karte-zephyr-dunkel.svg", "karte-zephyr-hell.svg",
         "kopf-dunkel.svg", "kopf-hell.svg",
     ]
